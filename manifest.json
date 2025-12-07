@@ -10,7 +10,7 @@
       "48": "/icons/icon48.png",
       "128": "/icons/icon128.png"
     },
-    "default_title": "Download Images"
+    "default_title": "Bulk Download Images"
   },
   "background": {
     "service_worker": "background.js"
