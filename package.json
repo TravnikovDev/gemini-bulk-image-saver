@@ -1,0 +1,19 @@
+{
+  "name": "gemini-bulk-image-saver",
+  "version": "1.1.0",
+  "description": "Chrome extension to bulk download images from Gemini conversations.",
+  "main": "index.js",
+  "scripts": {
+    "build": "extension build --browser=chrome --zip",
+    "dev": "extension dev --browser=chrome",
+    "start": "extension start --browser=chrome"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.0.262",
+    "extension": "latest",
+    "typescript": "^5.6.3"
+  }
+}

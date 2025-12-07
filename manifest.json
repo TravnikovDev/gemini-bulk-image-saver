@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Gemini Bulk Image Saver",
+  "version": "1.1.0",
+  "description": "Bulk download images from Gemini conversations on gemini.google.com.",
+  "permissions": ["downloads", "scripting", "activeTab"],
+  "action": {
+    "default_icon": {
+      "16": "/icons/icon16.png",
+      "48": "/icons/icon48.png",
+      "128": "/icons/icon128.png"
+    },
+    "default_title": "Download Images"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["contentScript.js"],
+      "css": ["content-script.css"]
+    }
+  ],
+  "icons": {
+    "16": "/icons/icon16.png",
+    "48": "/icons/icon48.png",
+    "128": "/icons/icon128.png"
+  }
+}

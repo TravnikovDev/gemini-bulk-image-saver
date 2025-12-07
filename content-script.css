@@ -1,0 +1,286 @@
+/* Gemini Bulk Image Saver - Content Script Styles */
+
+#gemini-image-saver-ui {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 10000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.gis-floating-container {
+  display: flex;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+/* Dark mode support */
+html.dark .gis-floating-container {
+  background: #2d2d30;
+  border-color: #4a4a4a;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gis-main-button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #10a37f;
+  color: white;
+  transition: background-color 0.2s;
+  padding: 4px 2px;
+  box-sizing: border-box;
+}
+
+.gis-main-button:hover,
+.gis-main-button:focus {
+  background: #0f8b6c;
+  outline: none;
+}
+
+.gis-main-button:focus {
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.3);
+}
+
+.gis-save-icon {
+  width: 16px;
+  height: 16px;
+  margin-bottom: 2px;
+}
+
+.gis-button-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.gis-text-line1,
+.gis-text-line2 {
+  font-size: 8px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.gis-dropdown-btn {
+  width: 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f7f7f8;
+  border-left: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+.gis-dropdown-btn:hover,
+.gis-dropdown-btn:focus {
+  background: #ebebeb;
+  outline: none;
+}
+
+.gis-dropdown-btn:focus {
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.3);
+}
+
+html.dark .gis-dropdown-btn {
+  background: #3f3f46;
+  border-left-color: #52525b;
+}
+
+html.dark .gis-dropdown-btn:hover,
+html.dark .gis-dropdown-btn:focus {
+  background: #52525b;
+}
+
+.gis-chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s;
+}
+
+.gis-chevron.open {
+  transform: rotate(180deg);
+}
+
+.gis-dropdown-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  padding: 16px;
+  margin-top: 8px;
+  display: none;
+}
+
+html.dark .gis-dropdown-panel {
+  background: #2d2d30;
+  border-color: #4a4a4a;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gis-dropdown-panel.open {
+  display: block;
+}
+
+.gis-option {
+  margin-bottom: 16px;
+}
+
+.gis-option label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+html.dark .gis-option label {
+  color: #d1d5db;
+}
+
+.gis-option input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: white;
+  color: #374151;
+}
+
+html.dark .gis-option input {
+  background: #374151;
+  border-color: #52525b;
+  color: #f3f4f6;
+}
+
+.gis-option input:focus {
+  outline: none;
+  border-color: #10a37f;
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+}
+
+html.dark .gis-option input:focus {
+  border-color: #10a37f;
+  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+}
+
+.gis-progress-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+html.dark .gis-progress-text {
+  color: #d1d5db;
+}
+
+.gis-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+html.dark .gis-progress-bar {
+  background: #4a4a4a;
+}
+
+.gis-progress-fill {
+  height: 100%;
+  background: #10a37f;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.gis-progress-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.gis-success {
+  color: #059669;
+  font-weight: 500;
+}
+
+.gis-failed {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.gis-help-text {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+html.dark .gis-help-text {
+  color: #9ca3af;
+}
+
+.gis-retry-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+html.dark .gis-retry-section {
+  border-top-color: #4b5563;
+}
+
+.gis-retry-btn {
+  width: 100%;
+  padding: 8px 16px;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.gis-retry-btn:hover,
+.gis-retry-btn:focus {
+  background: #d97706;
+  outline: none;
+}
+
+.gis-retry-btn:focus {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+}
+
+html.dark .gis-retry-btn {
+  background: #f59e0b;
+}
+
+html.dark .gis-retry-btn:hover,
+html.dark .gis-retry-btn:focus {
+  background: #d97706;
+}
