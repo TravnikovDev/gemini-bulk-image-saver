@@ -19,7 +19,7 @@
 }
 
 /* Dark mode support */
-html.dark .gis-floating-container {
+body.dark-theme .gis-floating-container {
   background: #1e1f20;
   border-color: #2d2e30;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
@@ -95,13 +95,13 @@ html.dark .gis-floating-container {
   box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.35);
 }
 
-html.dark .gis-dropdown-btn {
+body.dark-theme .gis-dropdown-btn {
   background: #3f3f46;
   border-left-color: #52525b;
 }
 
-html.dark .gis-dropdown-btn:hover,
-html.dark .gis-dropdown-btn:focus {
+body.dark-theme .gis-dropdown-btn:hover,
+body.dark-theme .gis-dropdown-btn:focus {
   background: #52525b;
 }
 
@@ -129,7 +129,7 @@ html.dark .gis-dropdown-btn:focus {
   display: none;
 }
 
-html.dark .gis-dropdown-panel {
+body.dark-theme .gis-dropdown-panel {
   background: #2d2d30;
   border-color: #3f3f46;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
@@ -151,7 +151,7 @@ html.dark .gis-dropdown-panel {
   color: #242942;
 }
 
-html.dark .gis-option label {
+body.dark-theme .gis-option label {
   color: #e5e7eb;
 }
 
@@ -164,10 +164,11 @@ html.dark .gis-option label {
   box-sizing: border-box;
   background: white;
   color: #1f2937;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
 }
 
-html.dark .gis-option input {
+body.dark-theme .gis-option input {
   background: #303036;
   border-color: #4b5563;
   color: #e5e7eb;
@@ -180,7 +181,7 @@ html.dark .gis-option input {
   background: #f8fafc;
 }
 
-html.dark .gis-option input:focus {
+body.dark-theme .gis-option input:focus {
   border-color: #00d2ff;
   box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3);
   background: #1f2937;
@@ -196,8 +197,10 @@ html.dark .gis-option input:focus {
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
   box-shadow: 0 8px 18px rgba(0, 210, 255, 0.35);
+  margin-bottom: 16px;
 }
 
 .gis-primary-cta:hover {
@@ -207,7 +210,8 @@ html.dark .gis-option input:focus {
 
 .gis-primary-cta:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3), 0 8px 18px rgba(0, 210, 255, 0.35);
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3),
+    0 8px 18px rgba(0, 210, 255, 0.35);
 }
 
 .gis-primary-cta:active {
@@ -223,7 +227,7 @@ html.dark .gis-option input:focus {
   margin-bottom: 8px;
 }
 
-html.dark .gis-progress-bar {
+body.dark-theme .gis-progress-bar {
   background: #3c4043;
 }
 
@@ -241,7 +245,7 @@ html.dark .gis-progress-bar {
   color: #242942;
 }
 
-html.dark .gis-progress-stats {
+body.dark-theme .gis-progress-stats {
   color: #e5e7eb;
 }
 
@@ -300,7 +304,7 @@ html.dark .gis-progress-stats {
   }
 }
 
-html.dark .gis-help-text {
+body.dark-theme .gis-help-text {
   color: #9ca3af;
 }
 
@@ -310,7 +314,7 @@ html.dark .gis-help-text {
   border-top: 1px solid #e5e7eb;
 }
 
-html.dark .gis-retry-section {
+body.dark-theme .gis-retry-section {
   border-top-color: #4b5563;
 }
 
@@ -341,11 +345,11 @@ html.dark .gis-retry-section {
   box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
 }
 
-html.dark .gis-retry-btn {
+body.dark-theme .gis-retry-btn {
   background: #f59e0b;
 }
 
-html.dark .gis-retry-btn:hover,
-html.dark .gis-retry-btn:focus {
+body.dark-theme .gis-retry-btn:hover,
+body.dark-theme .gis-retry-btn:focus {
   background: #d97706;
 }
