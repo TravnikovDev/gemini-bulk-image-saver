@@ -194,7 +194,10 @@ class GeminiImageSaver {
     if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
   }
 
-  startDownload() {
+  async startDownload() {
+    this.updateProgressText("Loading conversation...");
+    await this.loadFullHistory();
+
     const images = this.findImages();
     
     if (images.length === 0) {
@@ -373,6 +376,45 @@ class GeminiImageSaver {
     if (retrySection) {
       retrySection.style.display = 'none';
     }
+  }
+
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async loadFullHistory() {
+    const container = document.querySelector(".chat-history-scroll-container");
+    if (!container) return;
+
+    let lastCount = 0;
+    let stable = 0;
+    const maxIterations = 40;
+    const settleThreshold = 3;
+
+    for (let i = 0; i < maxIterations && stable < settleThreshold; i++) {
+      const conversations = container.querySelectorAll(".conversation-container");
+      if (!conversations.length) break;
+
+      const target = conversations[0] || container;
+      if (typeof target.scrollIntoView === "function") {
+        target.scrollIntoView({ block: "start", behavior: "auto" });
+      } else {
+        container.scrollTo({ top: 0, behavior: "auto" });
+      }
+
+      await this.sleep(600);
+
+      const newCount = container.querySelectorAll(".conversation-container").length;
+      if (newCount <= lastCount) {
+        stable += 1;
+      } else {
+        stable = 0;
+        lastCount = newCount;
+      }
+    }
+
+    container.scrollTo({ top: 0, behavior: "auto" });
+    await this.sleep(150);
   }
 
   retryFailedDownloads() {
