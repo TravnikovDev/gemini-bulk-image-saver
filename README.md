@@ -1,4 +1,4 @@
-# Gemini Bulk Image Saver
+# Gemini Bulk Image Downloader
 
 Chrome extension to bulk download images from Gemini conversations on `https://gemini.google.com/`. It injects a floating UI that collects all conversation images and saves them into a named folder under your Downloads directory.
 

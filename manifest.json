@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Gemini Bulk Image Saver",
+  "name": "Gemini Bulk Image Downloader",
   "version": "1.1.0",
   "description": "Bulk download images from Gemini conversations on gemini.google.com.",
   "permissions": ["downloads", "scripting", "activeTab"],

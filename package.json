@@ -1,5 +1,5 @@
 {
-  "name": "gemini-bulk-image-saver",
+  "name": "gemini-bulk-image-downloader",
   "version": "1.1.0",
   "description": "Chrome extension to bulk download images from Gemini conversations.",
   "main": "index.js",

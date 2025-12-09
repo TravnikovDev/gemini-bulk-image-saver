@@ -1,4 +1,4 @@
-// Gemini Bulk Image Saver - Enhanced UI Content Script
+// Gemini Bulk Image Downloader - Enhanced UI Content Script
 
 class GeminiImageSaver {
   constructor() {
