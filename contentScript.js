@@ -68,7 +68,9 @@ class GeminiImageSaver {
             <div id="gis-folder-help" class="gis-help-text">Images will be saved to Downloads/{folder-name}/</div>
           </div>
           <div class="gis-progress" id="gis-progress" role="status" aria-live="polite">
-            <div class="gis-progress-text">Ready to download</div>
+            <button class="gis-primary-cta" id="gis-primary-cta" type="button">
+              Ready to download
+            </button>
             <div class="gis-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Download progress">
               <div class="gis-progress-fill"></div>
             </div>
@@ -141,6 +143,11 @@ class GeminiImageSaver {
     folderInput.addEventListener('input', (e) => {
       this.customFolderName = e.target.value.trim();
     });
+
+    const primaryCta = document.getElementById("gis-primary-cta");
+    if (primaryCta) {
+      primaryCta.addEventListener("click", () => this.startDownload());
+    }
 
     // Retry button events
     const retryBtn = document.getElementById('gis-retry-btn');
@@ -347,8 +354,11 @@ class GeminiImageSaver {
   }
 
   updateProgressText(text) {
-    const progressText = document.querySelector('.gis-progress-text');
-    if (progressText) progressText.textContent = text;
+    const cta = document.getElementById('gis-primary-cta');
+    if (cta) {
+      cta.textContent = text;
+      cta.setAttribute('aria-label', text);
+    }
   }
 
   showRetryButton() {

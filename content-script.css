@@ -12,17 +12,17 @@
 .gis-floating-container {
   display: flex;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+  border: 1px solid #e5e7eb;
   overflow: hidden;
 }
 
 /* Dark mode support */
 html.dark .gis-floating-container {
-  background: #2d2d30;
-  border-color: #4a4a4a;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: #1e1f20;
+  border-color: #2d2e30;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
 .gis-main-button {
@@ -33,27 +33,29 @@ html.dark .gis-floating-container {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background: #10a37f;
+  background: #242942; /* Deep Indigo */
   color: white;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
   padding: 4px 2px;
   box-sizing: border-box;
 }
 
 .gis-main-button:hover,
 .gis-main-button:focus {
-  background: #0f8b6c;
+  background: #1f2338;
   outline: none;
 }
 
 .gis-main-button:focus {
-  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.3);
+  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.35); /* Cyan focus ring */
 }
 
 .gis-save-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   margin-bottom: 2px;
+  display: block;
+  flex-shrink: 0;
 }
 
 .gis-button-text {
@@ -90,7 +92,7 @@ html.dark .gis-floating-container {
 }
 
 .gis-dropdown-btn:focus {
-  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.3);
+  box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.35);
 }
 
 html.dark .gis-dropdown-btn {
@@ -119,18 +121,18 @@ html.dark .gis-dropdown-btn:focus {
   right: 0;
   width: 280px;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e0e0e0;
-  padding: 16px;
-  margin-top: 8px;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  margin-top: 10px;
   display: none;
 }
 
 html.dark .gis-dropdown-panel {
   background: #2d2d30;
-  border-color: #4a4a4a;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-color: #3f3f46;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
 .gis-dropdown-panel.open {
@@ -146,68 +148,88 @@ html.dark .gis-dropdown-panel {
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 6px;
-  color: #374151;
+  color: #242942;
 }
 
 html.dark .gis-option label {
-  color: #d1d5db;
+  color: #e5e7eb;
 }
 
 .gis-option input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 12px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 14px;
   box-sizing: border-box;
   background: white;
-  color: #374151;
+  color: #1f2937;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 html.dark .gis-option input {
-  background: #374151;
-  border-color: #52525b;
-  color: #f3f4f6;
+  background: #303036;
+  border-color: #4b5563;
+  color: #e5e7eb;
 }
 
 .gis-option input:focus {
   outline: none;
-  border-color: #10a37f;
-  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.1);
+  border-color: #00d2ff;
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.2);
+  background: #f8fafc;
 }
 
 html.dark .gis-option input:focus {
-  border-color: #10a37f;
-  box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+  border-color: #00d2ff;
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3);
+  background: #1f2937;
 }
 
-.gis-progress-text {
+.gis-primary-cta {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #00d2ff;
+  color: #242942;
+  font-weight: 700;
   font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 8px 18px rgba(0, 210, 255, 0.35);
 }
 
-html.dark .gis-progress-text {
-  color: #d1d5db;
+.gis-primary-cta:hover {
+  background: #0ae0ff;
+  box-shadow: 0 10px 22px rgba(0, 210, 255, 0.4);
+}
+
+.gis-primary-cta:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3), 0 8px 18px rgba(0, 210, 255, 0.35);
+}
+
+.gis-primary-cta:active {
+  transform: translateY(1px);
 }
 
 .gis-progress-bar {
   width: 100%;
   height: 6px;
-  background: #f3f4f6;
+  background: #eef2f7;
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 8px;
 }
 
 html.dark .gis-progress-bar {
-  background: #4a4a4a;
+  background: #3c4043;
 }
 
 .gis-progress-fill {
   height: 100%;
-  background: #10a37f;
+  background: #00d2ff;
   width: 0%;
   transition: width 0.3s ease;
 }
@@ -216,6 +238,11 @@ html.dark .gis-progress-bar {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
+  color: #242942;
+}
+
+html.dark .gis-progress-stats {
+  color: #e5e7eb;
 }
 
 .gis-success {
@@ -233,6 +260,44 @@ html.dark .gis-progress-bar {
   color: #6b7280;
   margin-top: 4px;
   font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  #gemini-image-saver-ui .gis-floating-container {
+    background: #1e1f20;
+    border-color: #2d2e30;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  }
+
+  #gemini-image-saver-ui .gis-dropdown-panel {
+    background: #2d2e30;
+    border-color: #3f3f46;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  #gemini-image-saver-ui .gis-option label {
+    color: #e5e7eb;
+  }
+
+  #gemini-image-saver-ui .gis-option input {
+    background: #303036;
+    border-color: #4b5563;
+    color: #e5e7eb;
+  }
+
+  #gemini-image-saver-ui .gis-option input:focus {
+    border-color: #00d2ff;
+    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.3);
+    background: #1f2937;
+  }
+
+  #gemini-image-saver-ui .gis-progress-bar {
+    background: #3c4043;
+  }
+
+  #gemini-image-saver-ui .gis-progress-stats {
+    color: #e5e7eb;
+  }
 }
 
 html.dark .gis-help-text {
