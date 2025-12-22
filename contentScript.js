@@ -4,7 +4,7 @@ class GeminiImageSaver {
   constructor() {
     this.isDropdownOpen = false;
     this.downloadProgress = { total: 0, success: 0, failed: 0 };
-    this.customFolderName = '';
+    this.customFolderName = "";
     this.failedDownloads = []; // Store failed download info for retry
     this.retryAttempts = 0;
     this.maxRetryAttempts = 3;
@@ -18,7 +18,7 @@ class GeminiImageSaver {
 
   createFloatingUI() {
     // Remove existing UI if present
-    const existingUI = document.getElementById('gemini-image-saver-ui');
+    const existingUI = document.getElementById("gemini-image-saver-ui");
     if (existingUI) {
       existingUI.remove();
     }
@@ -27,8 +27,8 @@ class GeminiImageSaver {
     const currentChatId = this.getCurrentChatId();
 
     // Create main container
-    const container = document.createElement('div');
-    container.id = 'gemini-image-saver-ui';
+    const container = document.createElement("div");
+    container.id = "gemini-image-saver-ui";
     container.innerHTML = `
       <div class="gis-floating-container">
         <div class="gis-main-button" id="gis-save-btn" 
@@ -98,49 +98,49 @@ class GeminiImageSaver {
   }
 
   setupEventListeners() {
-    const saveBtn = document.getElementById('gis-save-btn');
-    const dropdownBtn = document.getElementById('gis-dropdown-btn');
-    const dropdownPanel = document.getElementById('gis-dropdown-panel');
-    const folderInput = document.getElementById('gis-folder-input');
+    const saveBtn = document.getElementById("gis-save-btn");
+    const dropdownBtn = document.getElementById("gis-dropdown-btn");
+    const dropdownPanel = document.getElementById("gis-dropdown-panel");
+    const folderInput = document.getElementById("gis-folder-input");
 
     // Initialize with current value
     this.customFolderName = folderInput.value;
 
     // Save button events
-    saveBtn.addEventListener('click', () => this.startDownload());
-    saveBtn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    saveBtn.addEventListener("click", () => this.startDownload());
+    saveBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         this.startDownload();
       }
     });
 
     // Dropdown button events
-    dropdownBtn.addEventListener('click', () => this.toggleDropdown());
-    dropdownBtn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    dropdownBtn.addEventListener("click", () => this.toggleDropdown());
+    dropdownBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         this.toggleDropdown();
-      } else if (e.key === 'Escape') {
-        this.closeDropdown();
-      }
-    });
-    
-    // Close dropdown when clicking outside or pressing Escape
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#gemini-image-saver-ui')) {
+      } else if (e.key === "Escape") {
         this.closeDropdown();
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.isDropdownOpen) {
+    // Close dropdown when clicking outside or pressing Escape
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("#gemini-image-saver-ui")) {
+        this.closeDropdown();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.isDropdownOpen) {
         this.closeDropdown();
         dropdownBtn.focus();
       }
     });
 
-    folderInput.addEventListener('input', (e) => {
+    folderInput.addEventListener("input", (e) => {
       this.customFolderName = e.target.value.trim();
     });
 
@@ -150,11 +150,11 @@ class GeminiImageSaver {
     }
 
     // Retry button events
-    const retryBtn = document.getElementById('gis-retry-btn');
+    const retryBtn = document.getElementById("gis-retry-btn");
     if (retryBtn) {
-      retryBtn.addEventListener('click', () => this.retryFailedDownloads());
-      retryBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      retryBtn.addEventListener("click", () => this.retryFailedDownloads());
+      retryBtn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           this.retryFailedDownloads();
         }
@@ -164,34 +164,34 @@ class GeminiImageSaver {
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
-    const dropdownPanel = document.getElementById('gis-dropdown-panel');
-    const dropdownBtn = document.getElementById('gis-dropdown-btn');
-    const chevron = document.querySelector('.gis-chevron');
-    
+    const dropdownPanel = document.getElementById("gis-dropdown-panel");
+    const dropdownBtn = document.getElementById("gis-dropdown-btn");
+    const chevron = document.querySelector(".gis-chevron");
+
     if (this.isDropdownOpen) {
-      dropdownPanel.classList.add('open');
-      chevron.classList.add('open');
-      dropdownBtn.setAttribute('aria-expanded', 'true');
+      dropdownPanel.classList.add("open");
+      chevron.classList.add("open");
+      dropdownBtn.setAttribute("aria-expanded", "true");
       // Focus the first input in the dropdown for accessibility
       setTimeout(() => {
-        const folderInput = document.getElementById('gis-folder-input');
+        const folderInput = document.getElementById("gis-folder-input");
         if (folderInput) folderInput.focus();
       }, 100);
     } else {
-      dropdownPanel.classList.remove('open');
-      chevron.classList.remove('open');
-      dropdownBtn.setAttribute('aria-expanded', 'false');
+      dropdownPanel.classList.remove("open");
+      chevron.classList.remove("open");
+      dropdownBtn.setAttribute("aria-expanded", "false");
     }
   }
 
   closeDropdown() {
     this.isDropdownOpen = false;
-    const dropdownPanel = document.getElementById('gis-dropdown-panel');
-    const dropdownBtn = document.getElementById('gis-dropdown-btn');
-    const chevron = document.querySelector('.gis-chevron');
-    dropdownPanel.classList.remove('open');
-    chevron.classList.remove('open');
-    if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
+    const dropdownPanel = document.getElementById("gis-dropdown-panel");
+    const dropdownBtn = document.getElementById("gis-dropdown-btn");
+    const chevron = document.querySelector(".gis-chevron");
+    dropdownPanel.classList.remove("open");
+    chevron.classList.remove("open");
+    if (dropdownBtn) dropdownBtn.setAttribute("aria-expanded", "false");
   }
 
   async startDownload() {
@@ -199,9 +199,9 @@ class GeminiImageSaver {
     await this.loadFullHistory();
 
     const images = this.findImages();
-    
+
     if (images.length === 0) {
-      this.updateProgressText('No images found');
+      this.updateProgressText("No images found");
       // Open dropdown to show the "no images" message
       if (!this.isDropdownOpen) {
         this.toggleDropdown();
@@ -231,9 +231,9 @@ class GeminiImageSaver {
         index: index,
         chatId: this.getCurrentChatId(),
         customFolder: this.customFolderName,
-        folderName: folderName
+        folderName: folderName,
       };
-      
+
       chrome.runtime.sendMessage(downloadInfo);
     });
   }
@@ -242,7 +242,8 @@ class GeminiImageSaver {
     const url = new URL(window.location.href);
     const segments = url.pathname.split("/").filter(Boolean);
 
-    const conversationParam = url.searchParams.get("conversationId") || url.searchParams.get("chatId");
+    const conversationParam =
+      url.searchParams.get("conversationId") || url.searchParams.get("chatId");
     if (conversationParam) return conversationParam;
 
     const cIndex = segments.indexOf("c");
@@ -261,8 +262,8 @@ class GeminiImageSaver {
   findImages() {
     const scopes = [
       ...document.querySelectorAll("main"),
-      ...document.querySelectorAll('[role=\"main\"]'),
-      ...document.querySelectorAll('[data-message-author-role]'),
+      ...document.querySelectorAll('[role="main"]'),
+      ...document.querySelectorAll("[data-message-author-role]"),
     ];
 
     const containers = scopes.length ? scopes : [document.body];
@@ -273,10 +274,16 @@ class GeminiImageSaver {
       container.querySelectorAll("img").forEach((img) => {
         const src = img.currentSrc || img.src;
         if (!src) return;
-        if (src.startsWith("data:") || src.startsWith("chrome-extension:")) return;
+        if (src.startsWith("data:") || src.startsWith("chrome-extension:"))
+          return;
         if (img.closest("#gemini-image-saver-ui")) return;
 
-        const size = Math.max(img.naturalWidth, img.naturalHeight, img.width, img.height);
+        const size = Math.max(
+          img.naturalWidth,
+          img.naturalHeight,
+          img.width,
+          img.height
+        );
         if (size < 80) return; // Skip small UI icons
 
         if (seen.has(src)) return;
@@ -293,13 +300,14 @@ class GeminiImageSaver {
       if (message.action === "downloadComplete") {
         this.downloadProgress.success++;
         // Remove from failed downloads if it was previously failed and now succeeded
-        this.failedDownloads = this.failedDownloads.filter(failed => 
-          !(failed.url === message.url && failed.index === message.index)
+        this.failedDownloads = this.failedDownloads.filter(
+          (failed) =>
+            !(failed.url === message.url && failed.index === message.index)
         );
         this.updateProgress();
       } else if (message.action === "downloadFailed") {
         this.downloadProgress.failed++;
-        
+
         // Store failed download info for retry
         const failedDownload = {
           url: message.url,
@@ -307,17 +315,18 @@ class GeminiImageSaver {
           error: message.error,
           chatId: this.getCurrentChatId(),
           customFolder: this.customFolderName,
-          folderName: this.customFolderName || this.getCurrentChatId()
+          folderName: this.customFolderName || this.getCurrentChatId(),
         };
-        
+
         // Add to failed downloads if not already present
-        const existingIndex = this.failedDownloads.findIndex(failed => 
-          failed.url === message.url && failed.index === message.index
+        const existingIndex = this.failedDownloads.findIndex(
+          (failed) =>
+            failed.url === message.url && failed.index === message.index
         );
         if (existingIndex === -1) {
           this.failedDownloads.push(failedDownload);
         }
-        
+
         this.updateProgress();
       }
     });
@@ -325,56 +334,70 @@ class GeminiImageSaver {
 
   updateProgress() {
     this.updateProgressBar();
-    
-    const completed = this.downloadProgress.success + this.downloadProgress.failed;
+
+    const completed =
+      this.downloadProgress.success + this.downloadProgress.failed;
     if (completed === this.downloadProgress.total) {
       if (this.downloadProgress.failed > 0) {
-        this.updateProgressText(`Complete! ${this.downloadProgress.success} successful, ${this.downloadProgress.failed} failed`);
+        this.updateProgressText(
+          `Complete! ${this.downloadProgress.success} successful, ${this.downloadProgress.failed} failed`
+        );
         this.showRetryButton();
       } else {
-        this.updateProgressText(`Complete! All ${this.downloadProgress.success} images downloaded successfully`);
+        this.updateProgressText(
+          `Complete! All ${this.downloadProgress.success} images downloaded successfully`
+        );
         this.hideRetryButton();
       }
     } else {
-      this.updateProgressText(`Downloading... ${completed}/${this.downloadProgress.total}`);
+      this.updateProgressText(
+        `Downloading... ${completed}/${this.downloadProgress.total}`
+      );
       this.hideRetryButton();
     }
   }
 
   updateProgressBar() {
-    const completed = this.downloadProgress.success + this.downloadProgress.failed;
-    const percentage = this.downloadProgress.total > 0 ? (completed / this.downloadProgress.total) * 100 : 0;
-    
-    const progressBar = document.querySelector('.gis-progress-bar');
-    const progressFill = document.querySelector('.gis-progress-fill');
-    const successSpan = document.querySelector('.gis-success');
-    const failedSpan = document.querySelector('.gis-failed');
-    
-    if (progressBar) progressBar.setAttribute('aria-valuenow', percentage.toString());
+    const completed =
+      this.downloadProgress.success + this.downloadProgress.failed;
+    const percentage =
+      this.downloadProgress.total > 0
+        ? (completed / this.downloadProgress.total) * 100
+        : 0;
+
+    const progressBar = document.querySelector(".gis-progress-bar");
+    const progressFill = document.querySelector(".gis-progress-fill");
+    const successSpan = document.querySelector(".gis-success");
+    const failedSpan = document.querySelector(".gis-failed");
+
+    if (progressBar)
+      progressBar.setAttribute("aria-valuenow", percentage.toString());
     if (progressFill) progressFill.style.width = `${percentage}%`;
-    if (successSpan) successSpan.textContent = `✓ ${this.downloadProgress.success}`;
-    if (failedSpan) failedSpan.textContent = `✗ ${this.downloadProgress.failed}`;
+    if (successSpan)
+      successSpan.textContent = `✓ ${this.downloadProgress.success}`;
+    if (failedSpan)
+      failedSpan.textContent = `✗ ${this.downloadProgress.failed}`;
   }
 
   updateProgressText(text) {
-    const cta = document.getElementById('gis-primary-cta');
+    const cta = document.getElementById("gis-primary-cta");
     if (cta) {
       cta.textContent = text;
-      cta.setAttribute('aria-label', text);
+      cta.setAttribute("aria-label", text);
     }
   }
 
   showRetryButton() {
-    const retrySection = document.getElementById('gis-retry-section');
+    const retrySection = document.getElementById("gis-retry-section");
     if (retrySection) {
-      retrySection.style.display = 'block';
+      retrySection.style.display = "block";
     }
   }
 
   hideRetryButton() {
-    const retrySection = document.getElementById('gis-retry-section');
+    const retrySection = document.getElementById("gis-retry-section");
     if (retrySection) {
-      retrySection.style.display = 'none';
+      retrySection.style.display = "none";
     }
   }
 
@@ -392,7 +415,9 @@ class GeminiImageSaver {
     const settleThreshold = 3;
 
     for (let i = 0; i < maxIterations && stable < settleThreshold; i++) {
-      const conversations = container.querySelectorAll(".conversation-container");
+      const conversations = container.querySelectorAll(
+        ".conversation-container"
+      );
       if (!conversations.length) break;
 
       const target = conversations[0] || container;
@@ -404,7 +429,9 @@ class GeminiImageSaver {
 
       await this.sleep(600);
 
-      const newCount = container.querySelectorAll(".conversation-container").length;
+      const newCount = container.querySelectorAll(
+        ".conversation-container"
+      ).length;
       if (newCount <= lastCount) {
         stable += 1;
       } else {
@@ -419,24 +446,28 @@ class GeminiImageSaver {
 
   retryFailedDownloads() {
     if (this.failedDownloads.length === 0) {
-      this.updateProgressText('No failed downloads to retry');
+      this.updateProgressText("No failed downloads to retry");
       return;
     }
 
     // Check if we've exceeded max retry attempts
     if (this.retryAttempts >= this.maxRetryAttempts) {
-      this.updateProgressText(`Max retry attempts (${this.maxRetryAttempts}) reached. ${this.failedDownloads.length} images still failed.`);
+      this.updateProgressText(
+        `Max retry attempts (${this.maxRetryAttempts}) reached. ${this.failedDownloads.length} images still failed.`
+      );
       return;
     }
 
     this.retryAttempts++;
     this.hideRetryButton();
-    
+
     // Reset only the failed count for the retry
     const failedCount = this.failedDownloads.length;
     this.downloadProgress.failed = 0;
-    
-    this.updateProgressText(`Retry attempt ${this.retryAttempts}/${this.maxRetryAttempts}: Retrying ${failedCount} failed images...`);
+
+    this.updateProgressText(
+      `Retry attempt ${this.retryAttempts}/${this.maxRetryAttempts}: Retrying ${failedCount} failed images...`
+    );
     this.updateProgressBar();
 
     // Make a copy of failed downloads since the array may be modified during retry
@@ -451,9 +482,9 @@ class GeminiImageSaver {
         index: failedDownload.index,
         chatId: failedDownload.chatId,
         customFolder: failedDownload.customFolder,
-        folderName: failedDownload.folderName
+        folderName: failedDownload.folderName,
       };
-      
+
       chrome.runtime.sendMessage(downloadInfo);
     });
   }
