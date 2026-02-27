@@ -14,6 +14,7 @@ class GeminiImageSaver {
   init() {
     this.createFloatingUI();
     this.setupMessageListener();
+    this.setupUrlChangeListener();
   }
 
   createFloatingUI() {
@@ -259,14 +260,63 @@ class GeminiImageSaver {
     return "gemini-conversation";
   }
 
+  setupUrlChangeListener() {
+    this.lastUrl = window.location.href;
+
+    const onUrlMaybeChanged = () => {
+      const currentUrl = window.location.href;
+      if (currentUrl === this.lastUrl) return;
+      this.lastUrl = currentUrl;
+
+      const currentChatId = this.getCurrentChatId();
+
+      // Keep default folder name in sync with current chat, but don't overwrite user custom input
+      if (!this.customFolderName) {
+        const folderInput = document.getElementById("gis-folder-input");
+        if (folderInput) folderInput.value = currentChatId;
+      }
+
+      // Also refresh UI so any internal state tied to chat id stays consistent
+      this.createFloatingUI();
+    };
+
+    // Catch SPA navigation (Gemini is an SPA)
+    const origPushState = history.pushState;
+    const origReplaceState = history.replaceState;
+
+    history.pushState = function (...args) {
+      origPushState.apply(this, args);
+      window.dispatchEvent(new Event("gis:urlchange"));
+    };
+
+    history.replaceState = function (...args) {
+      origReplaceState.apply(this, args);
+      window.dispatchEvent(new Event("gis:urlchange"));
+    };
+
+    window.addEventListener("popstate", () => window.dispatchEvent(new Event("gis:urlchange")));
+    window.addEventListener("gis:urlchange", onUrlMaybeChanged);
+
+    // Fallback: some navigations update URL without history API hooks
+    this.urlPollInterval = setInterval(onUrlMaybeChanged, 500);
+  }
+
   findImages() {
-    const scopes = [
-      ...document.querySelectorAll("main"),
-      ...document.querySelectorAll('[role="main"]'),
-      ...document.querySelectorAll("[data-message-author-role]"),
+    // Try to strictly scope to the chat thread container to avoid sidebar thumbnails.
+    const strictScopes = [
+      ".chat-history-scroll-container",
+      "main",
+      '[role="main"]',
     ];
 
-    const containers = scopes.length ? scopes : [document.body];
+    const scopeEls = strictScopes
+      .map((sel) => Array.from(document.querySelectorAll(sel)))
+      .flat()
+      // prefer the largest container (usually the conversation thread)
+      .sort((a, b) => b.scrollHeight * b.scrollWidth - a.scrollHeight * a.scrollWidth);
+
+    const containers = scopeEls.length ? [scopeEls[0]] : [document.body];
+
     const seen = new Set();
     const images = [];
 
@@ -274,9 +324,11 @@ class GeminiImageSaver {
       container.querySelectorAll("img").forEach((img) => {
         const src = img.currentSrc || img.src;
         if (!src) return;
-        if (src.startsWith("data:") || src.startsWith("chrome-extension:"))
-          return;
+        if (src.startsWith("data:") || src.startsWith("chrome-extension:")) return;
         if (img.closest("#gemini-image-saver-ui")) return;
+
+        // Exclude obvious sidebar/nav regions if the DOM provides them
+        if (img.closest("aside") || img.closest("nav")) return;
 
         const size = Math.max(
           img.naturalWidth,
@@ -284,7 +336,7 @@ class GeminiImageSaver {
           img.width,
           img.height
         );
-        if (size < 80) return; // Skip small UI icons
+        if (size < 120) return; // Skip small thumbnails/icons (sidebar thumbnails were being included)
 
         if (seen.has(src)) return;
         seen.add(src);
