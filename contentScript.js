@@ -4,10 +4,11 @@ class GeminiImageSaver {
   constructor() {
     this.isDropdownOpen = false;
     this.downloadProgress = { total: 0, success: 0, failed: 0 };
-    this.customFolderName = "";
     this.failedDownloads = []; // Store failed download info for retry
     this.retryAttempts = 0;
     this.maxRetryAttempts = 3;
+    this.modalWaitTimeoutMs = 8000;
+    this.modalCloseTimeoutMs = 5000;
     this.init();
   }
 
@@ -22,9 +23,6 @@ class GeminiImageSaver {
     if (existingUI) {
       existingUI.remove();
     }
-
-    // Get current chat ID for prefilling
-    const currentChatId = this.getCurrentChatId();
 
     // Create main container
     const container = document.createElement("div");
@@ -57,16 +55,6 @@ class GeminiImageSaver {
           </svg>
         </div>
         <div class="gis-dropdown-panel" id="gis-dropdown-panel" role="dialog" aria-label="Download options">
-          <div class="gis-option">
-            <label for="gis-folder-input">Custom folder name:</label>
-            <input type="text" 
-                   id="gis-folder-input" 
-                   value="${currentChatId}" 
-                   placeholder="Enter folder name"
-                   aria-describedby="gis-folder-help"
-                   title="Specify a custom name for the download folder">
-            <div id="gis-folder-help" class="gis-help-text">Images will be saved to Downloads/{folder-name}/</div>
-          </div>
           <div class="gis-progress" id="gis-progress" role="status" aria-live="polite">
             <button class="gis-primary-cta" id="gis-primary-cta" type="button">
               Ready to download
@@ -101,11 +89,6 @@ class GeminiImageSaver {
     const saveBtn = document.getElementById("gis-save-btn");
     const dropdownBtn = document.getElementById("gis-dropdown-btn");
     const dropdownPanel = document.getElementById("gis-dropdown-panel");
-    const folderInput = document.getElementById("gis-folder-input");
-
-    // Initialize with current value
-    this.customFolderName = folderInput.value;
-
     // Save button events
     saveBtn.addEventListener("click", () => this.startDownload());
     saveBtn.addEventListener("keydown", (e) => {
@@ -140,10 +123,6 @@ class GeminiImageSaver {
       }
     });
 
-    folderInput.addEventListener("input", (e) => {
-      this.customFolderName = e.target.value.trim();
-    });
-
     const primaryCta = document.getElementById("gis-primary-cta");
     if (primaryCta) {
       primaryCta.addEventListener("click", () => this.startDownload());
@@ -174,8 +153,8 @@ class GeminiImageSaver {
       dropdownBtn.setAttribute("aria-expanded", "true");
       // Focus the first input in the dropdown for accessibility
       setTimeout(() => {
-        const folderInput = document.getElementById("gis-folder-input");
-        if (folderInput) folderInput.focus();
+        const primaryCta = document.getElementById("gis-primary-cta");
+        if (primaryCta) primaryCta.focus();
       }, 100);
     } else {
       dropdownPanel.classList.remove("open");
@@ -198,10 +177,10 @@ class GeminiImageSaver {
     this.updateProgressText("Loading conversation...");
     await this.loadFullHistory();
 
-    const images = this.findImages();
+    const imageButtons = this.findImagePreviewButtons();
 
-    if (images.length === 0) {
-      this.updateProgressText("No images found");
+    if (imageButtons.length === 0) {
+      this.updateProgressText("No images found to download");
       // Open dropdown to show the "no images" message
       if (!this.isDropdownOpen) {
         this.toggleDropdown();
@@ -215,27 +194,31 @@ class GeminiImageSaver {
     }
 
     // Reset and initialize progress
-    this.downloadProgress = { total: images.length, success: 0, failed: 0 };
+    this.downloadProgress = {
+      total: imageButtons.length,
+      success: 0,
+      failed: 0,
+    };
     this.failedDownloads = []; // Reset failed downloads
     this.retryAttempts = 0; // Reset retry counter
     this.hideRetryButton(); // Hide retry button
-    this.updateProgressText(`Downloading ${images.length} images...`);
+    this.updateProgressText(`Downloading ${imageButtons.length} images...`);
     this.updateProgressBar();
 
-    const folderName = this.customFolderName || this.getCurrentChatId();
-
-    images.forEach((img, index) => {
-      const downloadInfo = {
-        action: "download",
-        url: img.src,
-        index: index,
-        chatId: this.getCurrentChatId(),
-        customFolder: this.customFolderName,
-        folderName: folderName,
-      };
-
-      chrome.runtime.sendMessage(downloadInfo);
-    });
+    for (let index = 0; index < imageButtons.length; index++) {
+      const button = imageButtons[index];
+      try {
+        await this.processImageDownload(button, index);
+        this.downloadProgress.success++;
+      } catch (error) {
+        this.downloadProgress.failed++;
+        this.failedDownloads.push({
+          index: index,
+          error: error?.message || "Unknown error",
+        });
+      }
+      this.updateProgress();
+    }
   }
 
   getCurrentChatId() {
@@ -259,7 +242,7 @@ class GeminiImageSaver {
     return "gemini-conversation";
   }
 
-  findImages() {
+  findImagePreviewButtons() {
     const scopes = [
       ...document.querySelectorAll("main"),
       ...document.querySelectorAll('[role="main"]'),
@@ -268,69 +251,35 @@ class GeminiImageSaver {
 
     const containers = scopes.length ? scopes : [document.body];
     const seen = new Set();
-    const images = [];
+    const buttons = [];
 
     containers.forEach((container) => {
-      container.querySelectorAll("img").forEach((img) => {
-        const src = img.currentSrc || img.src;
-        if (!src) return;
-        if (src.startsWith("data:") || src.startsWith("chrome-extension:"))
-          return;
-        if (img.closest("#gemini-image-saver-ui")) return;
-
-        const size = Math.max(
-          img.naturalWidth,
-          img.naturalHeight,
-          img.width,
-          img.height
-        );
-        if (size < 80) return; // Skip small UI icons
-
-        if (seen.has(src)) return;
-        seen.add(src);
-        images.push(img);
+      const imageButtons = container.querySelectorAll(
+        "single-image button.image-button, generated-image button.image-button, button.image-button img.image"
+      );
+      imageButtons.forEach((buttonLike) => {
+        const button =
+          buttonLike.tagName.toLowerCase() === "button"
+            ? buttonLike
+            : buttonLike.closest("button.image-button");
+        if (!button) return;
+        if (button.closest("#gemini-image-saver-ui")) return;
+        const key =
+          button.getAttribute("jslog") ||
+          button
+            .closest("[data-image-attachment-index]")
+            ?.getAttribute("data-image-attachment-index") ||
+          button.innerHTML;
+        if (seen.has(key)) return;
+        seen.add(key);
+        buttons.push(button);
       });
     });
 
-    return images;
+    return buttons;
   }
 
-  setupMessageListener() {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.action === "downloadComplete") {
-        this.downloadProgress.success++;
-        // Remove from failed downloads if it was previously failed and now succeeded
-        this.failedDownloads = this.failedDownloads.filter(
-          (failed) =>
-            !(failed.url === message.url && failed.index === message.index)
-        );
-        this.updateProgress();
-      } else if (message.action === "downloadFailed") {
-        this.downloadProgress.failed++;
-
-        // Store failed download info for retry
-        const failedDownload = {
-          url: message.url,
-          index: message.index,
-          error: message.error,
-          chatId: this.getCurrentChatId(),
-          customFolder: this.customFolderName,
-          folderName: this.customFolderName || this.getCurrentChatId(),
-        };
-
-        // Add to failed downloads if not already present
-        const existingIndex = this.failedDownloads.findIndex(
-          (failed) =>
-            failed.url === message.url && failed.index === message.index
-        );
-        if (existingIndex === -1) {
-          this.failedDownloads.push(failedDownload);
-        }
-
-        this.updateProgress();
-      }
-    });
-  }
+  setupMessageListener() {}
 
   updateProgress() {
     this.updateProgressBar();
@@ -422,9 +371,9 @@ class GeminiImageSaver {
 
       const target = conversations[0] || container;
       if (typeof target.scrollIntoView === "function") {
-        target.scrollIntoView({ block: "start", behavior: "auto" });
+        target.scrollIntoView({ block: "start", behavior: "smooth" });
       } else {
-        container.scrollTo({ top: 0, behavior: "auto" });
+        container.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       await this.sleep(600);
@@ -440,7 +389,7 @@ class GeminiImageSaver {
       }
     }
 
-    container.scrollTo({ top: 0, behavior: "auto" });
+    container.scrollTo({ top: 0, behavior: "smooth" });
     await this.sleep(150);
   }
 
@@ -475,18 +424,103 @@ class GeminiImageSaver {
     this.failedDownloads = []; // Clear the array, it will be repopulated if downloads fail again
 
     // Retry each failed download
-    failedToRetry.forEach((failedDownload) => {
-      const downloadInfo = {
-        action: "download",
-        url: failedDownload.url,
-        index: failedDownload.index,
-        chatId: failedDownload.chatId,
-        customFolder: failedDownload.customFolder,
-        folderName: failedDownload.folderName,
-      };
+    this.retryFailedList(failedToRetry);
+  }
 
-      chrome.runtime.sendMessage(downloadInfo);
-    });
+  async retryFailedList(failedList) {
+    const buttons = this.findImagePreviewButtons();
+    for (const failedDownload of failedList) {
+      const button = buttons[failedDownload.index];
+      if (!button) {
+        this.downloadProgress.failed++;
+        this.failedDownloads.push({
+          index: failedDownload.index,
+          error: "Image button not found for retry",
+        });
+        this.updateProgress();
+        continue;
+      }
+      try {
+        await this.processImageDownload(button, failedDownload.index);
+        this.downloadProgress.success++;
+      } catch (error) {
+        this.downloadProgress.failed++;
+        this.failedDownloads.push({
+          index: failedDownload.index,
+          error: error?.message || "Unknown error",
+        });
+      }
+      this.updateProgress();
+    }
+  }
+
+  async processImageDownload(button, index) {
+    button.scrollIntoView({ block: "center", behavior: "smooth" });
+    button.click();
+    await this.sleep(2000);
+
+    const downloadButton = await this.waitForAnySelector(
+      [
+        'button[data-test-id="download-generated-image-button"]',
+        "download-generated-image-button button",
+      ],
+      this.modalWaitTimeoutMs
+    );
+
+    if (!downloadButton) {
+      throw new Error("Download full size button not found");
+    }
+
+    downloadButton.click();
+    await this.sleep(2000);
+
+    const closed = await this.closeImageModal();
+    if (!closed) {
+      throw new Error("Modal did not close");
+    }
+  }
+
+  async closeImageModal() {
+    const closeButton =
+      document.querySelector('button[aria-label="Back"]') ||
+      document.querySelector('button[aria-label="Close"]') ||
+      document.querySelector('button[aria-label="Close dialog"]') ||
+      document.querySelector('button[aria-label="Close image"]');
+
+    if (closeButton) {
+      closeButton.click();
+    } else {
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+      );
+    }
+
+    await this.sleep(2000);
+    return this.waitForModalClose(this.modalCloseTimeoutMs);
+  }
+
+  async waitForModalClose(timeoutMs) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const stillOpen = document.querySelector(
+        'button[data-test-id="download-generated-image-button"], download-generated-image-button button'
+      );
+      if (!stillOpen) return true;
+      await this.sleep(150);
+    }
+    return false;
+  }
+
+  async waitForAnySelector(selectors, timeoutMs) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      for (const selector of selectors) {
+        const element = document.querySelector(selector);
+        if (element) return element;
+      }
+      await this.sleep(150);
+    }
+    return null;
   }
 }
 
