@@ -1,9 +1,9 @@
 # Gemini Bulk Image Downloader
 
-Chrome extension to bulk download images from Gemini conversations on `https://gemini.google.com/`. It injects a floating UI that collects all conversation images and saves them into a named folder under your Downloads directory.
+Chrome extension to bulk download Gemini-generated response images from conversations on `https://gemini.google.com/`. It injects a floating UI that collects model output images and saves them into a named folder under your Downloads directory.
 
 ## Features
-- One-click bulk save of conversation images
+- One-click bulk save of Gemini response images
 - Custom folder naming per conversation
 - Progress + retry for failed downloads
 - Works on `https://gemini.google.com/*`
@@ -15,8 +15,8 @@ Chrome extension to bulk download images from Gemini conversations on `https://g
 
 ## Manual test flow
 1. Open `https://gemini.google.com/`
-2. Start or open a conversation with images
-3. Use the floating “Save Images” button to download; watch progress and retry failed items if shown.
+2. Start or open a conversation with generated images
+3. Use the floating “Save Images” button to download only model response images; uploaded prompt images should be ignored.
 
 ## Scripts
 - `npm run build` – bundle the extension and zip it

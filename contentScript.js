@@ -202,7 +202,7 @@ class GeminiImageSaver {
     const images = this.findImages();
 
     if (images.length === 0) {
-      this.updateProgressText("No images found");
+      this.updateProgressText("No response images found");
       // Open dropdown to show the "no images" message
       if (!this.isDropdownOpen) {
         this.toggleDropdown();
@@ -301,6 +301,43 @@ class GeminiImageSaver {
     this.urlPollInterval = setInterval(onUrlMaybeChanged, 500);
   }
 
+  isUserUploadedImage(img) {
+    const alt = (img.alt || "").toLowerCase();
+
+    return Boolean(
+      img.matches('[data-test-id="uploaded-img"]') ||
+        img.classList.contains("preview-image") ||
+        img.closest("user-query") ||
+        img.closest("user-query-file-preview") ||
+        img.closest(".file-preview-container") ||
+        alt.includes("uploaded image preview")
+    );
+  }
+
+  isGeminiResponseImage(img) {
+    const alt = (img.alt || "").toLowerCase();
+    const inResponseContainer = Boolean(
+      img.closest("model-response") ||
+        img.closest(".response-container") ||
+        img.closest(".response-content") ||
+        img.closest("structured-content-container")
+    );
+    const hasGeneratedImageMarkers = Boolean(
+      img.closest("generated-image") ||
+        img.closest(".generated-images") ||
+        img.closest("single-image.generated-image") ||
+        img.closest("[data-image-attachment-index]") ||
+        img.closest("button.image-button")
+    );
+
+    return (
+      inResponseContainer &&
+      (hasGeneratedImageMarkers ||
+        alt.includes("ai generated") ||
+        (img.classList.contains("image") && img.classList.contains("loaded")))
+    );
+  }
+
   findImages() {
     // Try to strictly scope to the chat thread container to avoid sidebar thumbnails.
     const strictScopes = [
@@ -319,13 +356,38 @@ class GeminiImageSaver {
 
     const seen = new Set();
     const images = [];
+    const responseSelectors = [
+      "model-response generated-image img",
+      "model-response [data-image-attachment-index] img",
+      "model-response button.image-button img",
+      'model-response img[alt*="AI generated"]',
+      ".response-content generated-image img",
+    ];
 
     containers.forEach((container) => {
-      container.querySelectorAll("img").forEach((img) => {
+      const candidates = new Set();
+
+      responseSelectors.forEach((selector) => {
+        container.querySelectorAll(selector).forEach((img) => candidates.add(img));
+      });
+
+      // Fallback for minor Gemini DOM changes: still scan broadly, but only accept
+      // images that sit inside response containers with generation-specific markers.
+      if (candidates.size === 0) {
+        container.querySelectorAll("img").forEach((img) => {
+          if (this.isGeminiResponseImage(img)) {
+            candidates.add(img);
+          }
+        });
+      }
+
+      candidates.forEach((img) => {
         const src = img.currentSrc || img.src;
         if (!src) return;
         if (src.startsWith("data:") || src.startsWith("chrome-extension:")) return;
         if (img.closest("#gemini-image-saver-ui")) return;
+        if (this.isUserUploadedImage(img)) return;
+        if (!this.isGeminiResponseImage(img)) return;
 
         // Exclude obvious sidebar/nav regions if the DOM provides them
         if (img.closest("aside") || img.closest("nav")) return;
